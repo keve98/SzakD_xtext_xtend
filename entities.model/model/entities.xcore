@@ -1,0 +1,28 @@
+package entities.entityModel
+class Entities
+{
+ contains NamedType[] declarations
+}
+abstract class DataType
+{
+}
+abstract class NamedElement
+{
+ String name
+}
+abstract class NamedType extends NamedElement, DataType
+{
+}
+class PrimitiveType extends NamedType
+{
+}
+class Entity extends NamedType
+{
+ refers Entity baseEntity
+ contains Field[] fields
+}
+class Field extends NamedElement
+{
+ boolean array
+ refers DataType dataType
+}

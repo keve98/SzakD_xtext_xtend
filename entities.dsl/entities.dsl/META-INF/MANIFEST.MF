@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: entities.dsl
+Bundle-ManifestVersion: 2
+Bundle-Name: entities.dsl
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: entities.dsl; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore.xcore.lib,
+ org.eclipse.emf.ecore.xcore,
+ entities.model,
+ entities.generator,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ org.eclipse.xtext.util,
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: entities.dsl.generator,
+ entities.dsl.services,
+ entities.dsl.parser.antlr,
+ entities.dsl.scoping,
+ entities.dsl.parser.antlr.internal,
+ entities.dsl.validation,
+ entities.dsl,
+ entities.dsl.serializer
+Import-Package: org.apache.log4j

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Generator
+Bundle-SymbolicName: entities.generator
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ entities.model
+Export-Package: entities.generator
+Bundle-RequiredExecutionEnvironment: JavaSE-13
+Automatic-Module-Name: entities.generator
