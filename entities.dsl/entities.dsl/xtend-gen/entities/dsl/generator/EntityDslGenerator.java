@@ -49,8 +49,16 @@ public class EntityDslGenerator extends AbstractGenerator {
         {
           String _string = e.getName().toString();
           final String path = (_string + ".java");
-          final CharSequence code = entGen.compileEntity(e);
-          fsa.generateFile(path, code);
+          String _string_1 = e.getName().toString();
+          final String controllerPath = (_string_1 + "Controller.java");
+          String _string_2 = e.getName().toString();
+          final String servicePath = (_string_2 + "Service.java");
+          String _string_3 = e.getName().toString();
+          final String repositoryPath = (_string_3 + "Repository.java");
+          fsa.generateFile(path, entGen.compileEntity(e));
+          fsa.generateFile(servicePath, entGen.compileService(e));
+          fsa.generateFile(controllerPath, entGen.compileController(e));
+          fsa.generateFile(repositoryPath, entGen.compileRepository(e));
         }
       }
     }

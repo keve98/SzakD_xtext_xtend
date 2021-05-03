@@ -25,8 +25,14 @@ IGeneratorContext context) {
  
  for(Entity e : model.declarations.filter(Entity)){
  	val path = e.name.toString() + ".java"
- 	val code = entGen.compileEntity(e)
- 	fsa.generateFile(path, code)
+ 	val controllerPath = e.name.toString() + "Controller.java"
+ 	val servicePath = e.name.toString() + "Service.java"
+ 	val repositoryPath = e.name.toString() + "Repository.java"
+ 	fsa.generateFile(path, entGen.compileEntity(e))
+ 	fsa.generateFile(servicePath, entGen.compileService(e))
+ 	fsa.generateFile(controllerPath, entGen.compileController(e))
+ 	fsa.generateFile(repositoryPath, entGen.compileRepository(e))
+ 	
  }
  
  }
