@@ -7,23 +7,26 @@ import entities.entityModel.Entity
 import entities.entityModel.NamedType
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import javax.inject.Inject
+import entities.entityModel.NamedElement
 
 class EntityGenerator {
 	@Inject extension IQualifiedNameProvider
 	def compileEntity(Entity e){
 		'''
- 		«IF e.eContainer.fullyQualifiedName !== null»package «e.eContainer.fullyQualifiedName»;«ENDIF»
+ 		«««IF e.eContainer.fullyQualifiedName !== null»package «e.eContainer.fullyQualifiedName»;«ENDIF»
  		
- 		import java.util.*;
- 		import javax.persistence.*;
-		
-			@Entity
-			public class  «e.name» «IF e.baseEntity !== null»extends «e.baseEntity.name» «ENDIF»{
+ 	import java.util.*;
+	import javax.persistence.*;
+	
+		@Entity
+		public class  «e.name» «IF e.baseEntity !== null»extends «e.baseEntity.name» «ENDIF»{
+				
+			
 			«FOR f: e.fields»
 			«IF f.array»
-				private List<«f.dataType.fullyQualifiedName»> «f.name»
+				private List<«(f.dataType as NamedType).name»> «f.name»;
 			«ELSE»
-				private «f.dataType.fullyQualifiedName» «f.name»;
+				private «(f.dataType as NamedType).name» «f.name»;
 			«ENDIF»
 			«ENDFOR» 
 			
@@ -34,25 +37,33 @@ class EntityGenerator {
 					«f.compileFields»
 				«ENDIF»
 			«ENDFOR» 
-			
-			}
+		}
 		'''
 	}
 	def compileFieldsArray(Field f){
 		'''
-		public «f.dataType.fullyQualifiedName» get«f.name.toFirstUpper»(){
-						return «f.name»;
-					}
+		
+		
+		public «(f.dataType as NamedType).name» get«f.name.toFirstUpper»(){
+			if(«f.name» == null){
+				«f.name» = new ArrayList<«(f.dataType as NamedType).name»>();
+			}
+			return «f.name»;
+		}
 		'''
 	}
 	
 	def compileFields(Field f){
 		'''
-			public «f.dataType.fullyQualifiedName» get«f.name.toFirstUpper»(){
+			
+
+			public «(f.dataType as NamedType).name» get«f.name.toFirstUpper»(){
 				return «f.name»;
 			}
 			
-			public void set«f.name.toFirstUpper»(«f.dataType.fullyQualifiedName» «f.name»){
+			
+			
+			public void set«f.name.toFirstUpper»(«(f.dataType as NamedType).name» «f.name»){
 				this.«f.name» = «f.name»;
 			}
 		'''
@@ -63,7 +74,7 @@ class EntityGenerator {
 	def compileController(Entity e){
 		
 		'''
-		«IF e.eContainer.fullyQualifiedName !== null»package «e.eContainer.fullyQualifiedName»;«ENDIF»
+		
 		
 		import com.example.SzakD_Rest.entities.*;
 		import com.example.SzakD_Rest.services.*;
@@ -113,7 +124,6 @@ class EntityGenerator {
 	
 	def compileService(Entity e){
 		'''
-		«IF e.eContainer.fullyQualifiedName !== null»package «e.eContainer.fullyQualifiedName»;«ENDIF»
 		
 		
 		import com.example.SzakD_Rest.entities.*;
@@ -173,7 +183,6 @@ class EntityGenerator {
 	
 	def compileRepository(Entity e){
 		'''
-			«IF e.eContainer.fullyQualifiedName !== null»package «e.eContainer.fullyQualifiedName»;«ENDIF»
 			
 			
 			import com.example.SzakD_Rest.entities.*;

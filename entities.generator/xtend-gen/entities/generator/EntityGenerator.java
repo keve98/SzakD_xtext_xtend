@@ -1,12 +1,13 @@
 package entities.generator;
 
+import entities.entityModel.DataType;
 import entities.entityModel.Entity;
 import entities.entityModel.Field;
+import entities.entityModel.NamedType;
 import javax.inject.Inject;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
-import org.eclipse.xtext.naming.QualifiedName;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 
@@ -18,24 +19,11 @@ public class EntityGenerator {
   
   public CharSequence compileEntity(final Entity e) {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.append(" \t\t");
-    {
-      QualifiedName _fullyQualifiedName = this._iQualifiedNameProvider.getFullyQualifiedName(e.eContainer());
-      boolean _tripleNotEquals = (_fullyQualifiedName != null);
-      if (_tripleNotEquals) {
-        _builder.append("package ");
-        QualifiedName _fullyQualifiedName_1 = this._iQualifiedNameProvider.getFullyQualifiedName(e.eContainer());
-        _builder.append(_fullyQualifiedName_1, " \t\t");
-        _builder.append(";");
-      }
-    }
-    _builder.newLineIfNotEmpty();
-    _builder.append(" \t\t");
+    _builder.append(" \t\t \t\t");
     _builder.newLine();
-    _builder.append(" \t\t");
+    _builder.append(" \t");
     _builder.append("import java.util.*;");
     _builder.newLine();
-    _builder.append(" \t\t");
     _builder.append("import javax.persistence.*;");
     _builder.newLine();
     _builder.newLine();
@@ -49,8 +37,8 @@ public class EntityGenerator {
     _builder.append(" ");
     {
       Entity _baseEntity = e.getBaseEntity();
-      boolean _tripleNotEquals_1 = (_baseEntity != null);
-      if (_tripleNotEquals_1) {
+      boolean _tripleNotEquals = (_baseEntity != null);
+      if (_tripleNotEquals) {
         _builder.append("extends ");
         String _name_1 = e.getBaseEntity().getName();
         _builder.append(_name_1, "\t");
@@ -59,35 +47,42 @@ public class EntityGenerator {
     }
     _builder.append("{");
     _builder.newLineIfNotEmpty();
+    _builder.append("\t\t\t");
+    _builder.newLine();
+    _builder.append("\t\t");
+    _builder.newLine();
     {
       EList<Field> _fields = e.getFields();
       for(final Field f : _fields) {
         {
           boolean _isArray = f.isArray();
           if (_isArray) {
-            _builder.append("\t");
+            _builder.append("\t\t");
             _builder.append("private List<");
-            QualifiedName _fullyQualifiedName_2 = this._iQualifiedNameProvider.getFullyQualifiedName(f.getDataType());
-            _builder.append(_fullyQualifiedName_2, "\t");
+            DataType _dataType = f.getDataType();
+            String _name_2 = ((NamedType) _dataType).getName();
+            _builder.append(_name_2, "\t\t");
             _builder.append("> ");
-            String _name_2 = f.getName();
-            _builder.append(_name_2, "\t");
+            String _name_3 = f.getName();
+            _builder.append(_name_3, "\t\t");
+            _builder.append(";");
             _builder.newLineIfNotEmpty();
           } else {
-            _builder.append("\t");
+            _builder.append("\t\t");
             _builder.append("private ");
-            QualifiedName _fullyQualifiedName_3 = this._iQualifiedNameProvider.getFullyQualifiedName(f.getDataType());
-            _builder.append(_fullyQualifiedName_3, "\t");
+            DataType _dataType_1 = f.getDataType();
+            String _name_4 = ((NamedType) _dataType_1).getName();
+            _builder.append(_name_4, "\t\t");
             _builder.append(" ");
-            String _name_3 = f.getName();
-            _builder.append(_name_3, "\t");
+            String _name_5 = f.getName();
+            _builder.append(_name_5, "\t\t");
             _builder.append(";");
             _builder.newLineIfNotEmpty();
           }
         }
       }
     }
-    _builder.append("\t");
+    _builder.append("\t\t");
     _builder.newLine();
     {
       EList<Field> _fields_1 = e.getFields();
@@ -95,21 +90,19 @@ public class EntityGenerator {
         {
           boolean _isArray_1 = f_1.isArray();
           if (_isArray_1) {
-            _builder.append("\t");
+            _builder.append("\t\t");
             CharSequence _compileFieldsArray = this.compileFieldsArray(f_1);
-            _builder.append(_compileFieldsArray, "\t");
+            _builder.append(_compileFieldsArray, "\t\t");
             _builder.newLineIfNotEmpty();
           } else {
-            _builder.append("\t");
+            _builder.append("\t\t");
             CharSequence _compileFields = this.compileFields(f_1);
-            _builder.append(_compileFields, "\t");
+            _builder.append(_compileFields, "\t\t");
             _builder.newLineIfNotEmpty();
           }
         }
       }
     }
-    _builder.append("\t");
-    _builder.newLine();
     _builder.append("\t");
     _builder.append("}");
     _builder.newLine();
@@ -118,21 +111,41 @@ public class EntityGenerator {
   
   public CharSequence compileFieldsArray(final Field f) {
     StringConcatenation _builder = new StringConcatenation();
+    _builder.newLine();
+    _builder.newLine();
     _builder.append("public ");
-    QualifiedName _fullyQualifiedName = this._iQualifiedNameProvider.getFullyQualifiedName(f.getDataType());
-    _builder.append(_fullyQualifiedName);
+    DataType _dataType = f.getDataType();
+    String _name = ((NamedType) _dataType).getName();
+    _builder.append(_name);
     _builder.append(" get");
     String _firstUpper = StringExtensions.toFirstUpper(f.getName());
     _builder.append(_firstUpper);
     _builder.append("(){");
     _builder.newLineIfNotEmpty();
-    _builder.append("\t\t\t\t");
+    _builder.append("\t");
+    _builder.append("if(");
+    String _name_1 = f.getName();
+    _builder.append(_name_1, "\t");
+    _builder.append(" == null){");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t\t");
+    String _name_2 = f.getName();
+    _builder.append(_name_2, "\t\t");
+    _builder.append(" = new ArrayList<");
+    DataType _dataType_1 = f.getDataType();
+    String _name_3 = ((NamedType) _dataType_1).getName();
+    _builder.append(_name_3, "\t\t");
+    _builder.append(">();");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    _builder.append("}");
+    _builder.newLine();
+    _builder.append("\t");
     _builder.append("return ");
-    String _name = f.getName();
-    _builder.append(_name, "\t\t\t\t");
+    String _name_4 = f.getName();
+    _builder.append(_name_4, "\t");
     _builder.append(";");
     _builder.newLineIfNotEmpty();
-    _builder.append("\t\t\t");
     _builder.append("}");
     _builder.newLine();
     return _builder;
@@ -140,9 +153,12 @@ public class EntityGenerator {
   
   public CharSequence compileFields(final Field f) {
     StringConcatenation _builder = new StringConcatenation();
+    _builder.newLine();
+    _builder.newLine();
     _builder.append("public ");
-    QualifiedName _fullyQualifiedName = this._iQualifiedNameProvider.getFullyQualifiedName(f.getDataType());
-    _builder.append(_fullyQualifiedName);
+    DataType _dataType = f.getDataType();
+    String _name = ((NamedType) _dataType).getName();
+    _builder.append(_name);
     _builder.append(" get");
     String _firstUpper = StringExtensions.toFirstUpper(f.getName());
     _builder.append(_firstUpper);
@@ -150,31 +166,34 @@ public class EntityGenerator {
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
     _builder.append("return ");
-    String _name = f.getName();
-    _builder.append(_name, "\t");
+    String _name_1 = f.getName();
+    _builder.append(_name_1, "\t");
     _builder.append(";");
     _builder.newLineIfNotEmpty();
     _builder.append("}");
+    _builder.newLine();
+    _builder.newLine();
     _builder.newLine();
     _builder.newLine();
     _builder.append("public void set");
     String _firstUpper_1 = StringExtensions.toFirstUpper(f.getName());
     _builder.append(_firstUpper_1);
     _builder.append("(");
-    QualifiedName _fullyQualifiedName_1 = this._iQualifiedNameProvider.getFullyQualifiedName(f.getDataType());
-    _builder.append(_fullyQualifiedName_1);
+    DataType _dataType_1 = f.getDataType();
+    String _name_2 = ((NamedType) _dataType_1).getName();
+    _builder.append(_name_2);
     _builder.append(" ");
-    String _name_1 = f.getName();
-    _builder.append(_name_1);
+    String _name_3 = f.getName();
+    _builder.append(_name_3);
     _builder.append("){");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
     _builder.append("this.");
-    String _name_2 = f.getName();
-    _builder.append(_name_2, "\t");
+    String _name_4 = f.getName();
+    _builder.append(_name_4, "\t");
     _builder.append(" = ");
-    String _name_3 = f.getName();
-    _builder.append(_name_3, "\t");
+    String _name_5 = f.getName();
+    _builder.append(_name_5, "\t");
     _builder.append(";");
     _builder.newLineIfNotEmpty();
     _builder.append("}");
@@ -184,17 +203,7 @@ public class EntityGenerator {
   
   public CharSequence compileController(final Entity e) {
     StringConcatenation _builder = new StringConcatenation();
-    {
-      QualifiedName _fullyQualifiedName = this._iQualifiedNameProvider.getFullyQualifiedName(e.eContainer());
-      boolean _tripleNotEquals = (_fullyQualifiedName != null);
-      if (_tripleNotEquals) {
-        _builder.append("package ");
-        QualifiedName _fullyQualifiedName_1 = this._iQualifiedNameProvider.getFullyQualifiedName(e.eContainer());
-        _builder.append(_fullyQualifiedName_1);
-        _builder.append(";");
-      }
-    }
-    _builder.newLineIfNotEmpty();
+    _builder.newLine();
     _builder.newLine();
     _builder.append("import com.example.SzakD_Rest.entities.*;");
     _builder.newLine();
@@ -402,17 +411,6 @@ public class EntityGenerator {
   
   public CharSequence compileService(final Entity e) {
     StringConcatenation _builder = new StringConcatenation();
-    {
-      QualifiedName _fullyQualifiedName = this._iQualifiedNameProvider.getFullyQualifiedName(e.eContainer());
-      boolean _tripleNotEquals = (_fullyQualifiedName != null);
-      if (_tripleNotEquals) {
-        _builder.append("package ");
-        QualifiedName _fullyQualifiedName_1 = this._iQualifiedNameProvider.getFullyQualifiedName(e.eContainer());
-        _builder.append(_fullyQualifiedName_1);
-        _builder.append(";");
-      }
-    }
-    _builder.newLineIfNotEmpty();
     _builder.newLine();
     _builder.newLine();
     _builder.append("import com.example.SzakD_Rest.entities.*;");
@@ -632,17 +630,6 @@ public class EntityGenerator {
   
   public CharSequence compileRepository(final Entity e) {
     StringConcatenation _builder = new StringConcatenation();
-    {
-      QualifiedName _fullyQualifiedName = this._iQualifiedNameProvider.getFullyQualifiedName(e.eContainer());
-      boolean _tripleNotEquals = (_fullyQualifiedName != null);
-      if (_tripleNotEquals) {
-        _builder.append("package ");
-        QualifiedName _fullyQualifiedName_1 = this._iQualifiedNameProvider.getFullyQualifiedName(e.eContainer());
-        _builder.append(_fullyQualifiedName_1);
-        _builder.append(";");
-      }
-    }
-    _builder.newLineIfNotEmpty();
     _builder.newLine();
     _builder.newLine();
     _builder.append("import com.example.SzakD_Rest.entities.*;");

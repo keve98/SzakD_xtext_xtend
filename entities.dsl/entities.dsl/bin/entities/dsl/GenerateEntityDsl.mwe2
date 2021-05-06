@@ -32,7 +32,7 @@ Workflow {
 		}
 		language = StandardLanguage {
 			name = "entities.dsl.EntityDsl"
-			fileExtensions = "txt"
+			fileExtensions = "entx"
 			referencedResource="platform:/resource/entities.model/model/entities.xcore"
 			serializer = {
 				generateStub = false
