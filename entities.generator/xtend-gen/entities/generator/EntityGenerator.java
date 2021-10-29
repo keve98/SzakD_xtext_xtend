@@ -4,6 +4,7 @@ import entities.entityModel.DataType;
 import entities.entityModel.Entity;
 import entities.entityModel.Field;
 import entities.entityModel.NamedType;
+import java.util.ArrayList;
 import javax.inject.Inject;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtend2.lib.StringConcatenation;
@@ -647,6 +648,574 @@ public class EntityGenerator {
     _builder.append(", Long> {");
     _builder.newLineIfNotEmpty();
     _builder.append("}");
+    _builder.newLine();
+    _builder.newLine();
+    return _builder;
+  }
+  
+  public CharSequence compileFrontend(final ArrayList<Entity> e) {
+    CharSequence _xblockexpression = null;
+    {
+      boolean isArray = false;
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("package com.example.SzakD_Rest.web;");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.entities.Blog;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.entities.Comment;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.entities.HasAuthor;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.entities.Post;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.repositories.BlogRepository;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.repositories.CommentRepository;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.repositories.HasAuthorRepository;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.repositories.PostRepository;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.services.BlogService;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.services.CommentService;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.services.HasAuthorService;");
+      _builder.newLine();
+      _builder.append("import com.example.SzakD_Rest.services.PostService;");
+      _builder.newLine();
+      _builder.append("import org.apache.tomcat.JarScanFilter;");
+      _builder.newLine();
+      _builder.append("import org.hibernate.secure.internal.JaccSecurityListener;");
+      _builder.newLine();
+      _builder.append("import org.springframework.beans.factory.annotation.Autowired;");
+      _builder.newLine();
+      _builder.append("import org.springframework.stereotype.Service;");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("import javax.faces.bean.ManagedBean;");
+      _builder.newLine();
+      _builder.append("import javax.faces.bean.SessionScoped;");
+      _builder.newLine();
+      _builder.append("import java.util.List;");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("@Service");
+      _builder.newLine();
+      _builder.append("@ManagedBean(name = \"JSFData\", eager = true)");
+      _builder.newLine();
+      _builder.append("@SessionScoped");
+      _builder.newLine();
+      _builder.append("public class JSFData {");
+      _builder.newLine();
+      {
+        for(final Entity f : e) {
+          _builder.append("\t");
+          _builder.append("private final ");
+          String _lowerCase = f.getName().toLowerCase();
+          _builder.append(_lowerCase, "\t");
+          _builder.append("Repository;");
+          _builder.newLineIfNotEmpty();
+        }
+      }
+      _builder.append("\t");
+      _builder.newLine();
+      {
+        for(final Entity f_1 : e) {
+          _builder.append("\t");
+          _builder.append("public ");
+          String _name = f_1.getName();
+          _builder.append(_name, "\t");
+          _builder.append("Service ");
+          String _firstLower = StringExtensions.toFirstLower(f_1.getName());
+          _builder.append(_firstLower, "\t");
+          _builder.append(";");
+          _builder.newLineIfNotEmpty();
+        }
+      }
+      _builder.append("\t");
+      _builder.newLine();
+      {
+        for(final Entity f_2 : e) {
+          _builder.append("\t");
+          _builder.append("public ");
+          String _firstUpper = StringExtensions.toFirstUpper(f_2.getName());
+          _builder.append(_firstUpper, "\t");
+          _builder.append(" ");
+          String _firstLower_1 = StringExtensions.toFirstLower(f_2.getName());
+          _builder.append(_firstLower_1, "\t");
+          _builder.append(" = new ");
+          String _name_1 = f_2.getName();
+          _builder.append(_name_1, "\t");
+          _builder.append("();");
+          _builder.newLineIfNotEmpty();
+        }
+      }
+      _builder.append("    ");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("Long blogid;");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("Long postid;");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("String authorname;");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("@Autowired");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("public JSFData(BlogRepository b, CommentRepository c, HasAuthorRepository h, PostRepository p){");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("this.blogRepository = b;");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("this.commentRepository = c;");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("this.hasAuthorRepository = h;");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("this.postRepository = p;");
+      _builder.newLine();
+      {
+        for(final Entity f_3 : e) {
+          _builder.append("        ");
+          _builder.append("this.");
+          String _lowerCase_1 = f_3.getName().toLowerCase();
+          _builder.append(_lowerCase_1, "        ");
+          _builder.append("Service = new ");
+          String _firstUpper_1 = StringExtensions.toFirstUpper(f_3.getName());
+          _builder.append(_firstUpper_1, "        ");
+          _builder.append("Service(this.");
+          String _lowerCase_2 = f_3.getName().toLowerCase();
+          _builder.append(_lowerCase_2, "        ");
+          _builder.append("Repositroy);");
+          _builder.newLineIfNotEmpty();
+        }
+      }
+      _builder.append("    ");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("//getters, setters");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.newLine();
+      {
+        for(final Entity f_4 : e) {
+          _builder.append("    ");
+          _builder.append("public ");
+          String _firstUpper_2 = StringExtensions.toFirstUpper(f_4.getName());
+          _builder.append(_firstUpper_2, "    ");
+          _builder.append(" get");
+          String _firstUpper_3 = StringExtensions.toFirstUpper(f_4.getName());
+          _builder.append(_firstUpper_3, "    ");
+          _builder.append("(){");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("\t");
+          _builder.append("return ");
+          String _firstLower_2 = StringExtensions.toFirstLower(f_4.getName());
+          _builder.append(_firstLower_2, "    \t");
+          _builder.append(";");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("}");
+          _builder.newLine();
+          _builder.append("    ");
+          _builder.newLine();
+        }
+      }
+      _builder.append("    ");
+      _builder.newLine();
+      {
+        for(final Entity f_5 : e) {
+          _builder.append("    ");
+          _builder.append("public void set");
+          String _firstUpper_4 = StringExtensions.toFirstUpper(f_5.getName());
+          _builder.append(_firstUpper_4, "    ");
+          _builder.append("(");
+          String _name_2 = f_5.getName();
+          _builder.append(_name_2, "    ");
+          _builder.append(" ");
+          String _firstLower_3 = StringExtensions.toFirstLower(f_5.getName());
+          _builder.append(_firstLower_3, "    ");
+          _builder.append("){");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("\t");
+          _builder.append("this.");
+          String _firstLower_4 = StringExtensions.toFirstLower(f_5.getName());
+          _builder.append(_firstLower_4, "    \t");
+          _builder.append(" = ");
+          String _firstLower_5 = StringExtensions.toFirstLower(f_5.getName());
+          _builder.append(_firstLower_5, "    \t");
+          _builder.append(";");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("}");
+          _builder.newLine();
+          _builder.append("    ");
+          _builder.newLine();
+        }
+      }
+      _builder.append("    ");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("public Long getBlogid() {");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("return blogid;");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("public void setBlogid(Long blogid) {");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("this.blogid = blogid;");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("public Long getPostid() {");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("return postid;");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("public void setPostid(Long postid) {");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("this.postid = postid;");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("public String getAuthorname() {");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("return authorname;");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("public void setAuthorname(String authorname) {");
+      _builder.newLine();
+      _builder.append("        ");
+      _builder.append("this.authorname = authorname;");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("}");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("//edits");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.newLine();
+      {
+        for(final Entity f_6 : e) {
+          _builder.append("    ");
+          _builder.append("public String set");
+          String _name_3 = f_6.getName();
+          _builder.append(_name_3, "    ");
+          _builder.append("ToEdit(Long id){");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("\t");
+          _builder.append("this.");
+          String _firstLower_6 = StringExtensions.toFirstLower(f_6.getName());
+          _builder.append(_firstLower_6, "    \t");
+          _builder.append(" = this.");
+          String _firstLower_7 = StringExtensions.toFirstLower(f_6.getName());
+          _builder.append(_firstLower_7, "    \t");
+          _builder.append("Service.findById(id);");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("\t");
+          _builder.append("return \"edit");
+          String _name_4 = f_6.getName();
+          _builder.append(_name_4, "    \t");
+          _builder.append(".xhtml\";");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("}");
+          _builder.newLine();
+          _builder.append("    ");
+          _builder.newLine();
+        }
+      }
+      _builder.append("    ");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("//add new");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.newLine();
+      {
+        for(final Entity ent : e) {
+          {
+            EList<Field> _fields = ent.getFields();
+            for(final Field f_7 : _fields) {
+              {
+                boolean _isArray = f_7.isArray();
+                if (_isArray) {
+                  _builder.append("    ");
+                  String _xblockexpression_1 = null;
+                  {
+                    isArray = true;
+                    _xblockexpression_1 = "";
+                  }
+                  _builder.append(_xblockexpression_1, "    ");
+                  _builder.newLineIfNotEmpty();
+                }
+              }
+            }
+          }
+          {
+            if (isArray) {
+              _builder.append("    ");
+              CharSequence _hasArray = this.hasArray(ent);
+              _builder.append(_hasArray, "    ");
+              _builder.newLineIfNotEmpty();
+            } else {
+              _builder.append("    ");
+              CharSequence _notArray = this.notArray(ent);
+              _builder.append(_notArray, "    ");
+              _builder.newLineIfNotEmpty();
+            }
+          }
+          _builder.append("    ");
+          String _xblockexpression_2 = null;
+          {
+            isArray = false;
+            _xblockexpression_2 = "";
+          }
+          _builder.append(_xblockexpression_2, "    ");
+          _builder.newLineIfNotEmpty();
+        }
+      }
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("//updates");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.newLine();
+      {
+        for(final Entity f_8 : e) {
+          _builder.append("    ");
+          _builder.append("public ");
+          String _name_5 = f_8.getName();
+          _builder.append(_name_5, "    ");
+          _builder.append(" update");
+          String _name_6 = f_8.getName();
+          _builder.append(_name_6, "    ");
+          _builder.append("(");
+          String _name_7 = f_8.getName();
+          _builder.append(_name_7, "    ");
+          _builder.append(" e, Long id){");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("\t");
+          _builder.append("return ");
+          String _firstLower_8 = StringExtensions.toFirstLower(f_8.getName());
+          _builder.append(_firstLower_8, "    \t");
+          _builder.append("Service.update");
+          String _name_8 = f_8.getName();
+          _builder.append(_name_8, "    \t");
+          _builder.append("(e, id);");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("}");
+          _builder.newLine();
+          _builder.append("    ");
+          _builder.newLine();
+        }
+      }
+      _builder.newLine();
+      _builder.newLine();
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.append("//deletes");
+      _builder.newLine();
+      _builder.append("    ");
+      _builder.newLine();
+      {
+        for(final Entity f_9 : e) {
+          _builder.append("    ");
+          _builder.append("public void delete");
+          String _name_9 = f_9.getName();
+          _builder.append(_name_9, "    ");
+          _builder.append("(Long id){");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("\t");
+          _builder.append("return ");
+          String _firstLower_9 = StringExtensions.toFirstLower(f_9.getName());
+          _builder.append(_firstLower_9, "    \t");
+          _builder.append("Service.delete");
+          String _name_10 = f_9.getName();
+          _builder.append(_name_10, "    \t");
+          _builder.append("(id);");
+          _builder.newLineIfNotEmpty();
+          _builder.append("    ");
+          _builder.append("}");
+          _builder.newLine();
+          _builder.append("    ");
+          _builder.newLine();
+        }
+      }
+      _builder.append("}");
+      _builder.newLine();
+      _builder.newLine();
+      _builder.newLine();
+      _xblockexpression = _builder;
+    }
+    return _xblockexpression;
+  }
+  
+  public CharSequence hasArray(final Entity e) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("public ");
+    String _name = e.getName();
+    _builder.append(_name);
+    _builder.append(" new");
+    String _name_1 = e.getName();
+    _builder.append(_name_1);
+    _builder.append("(");
+    String _name_2 = e.getName();
+    _builder.append(_name_2);
+    _builder.append(" p){");
+    _builder.newLineIfNotEmpty();
+    {
+      EList<Field> _fields = e.getFields();
+      for(final Field f : _fields) {
+        {
+          boolean _isArray = f.isArray();
+          if (_isArray) {
+            _builder.append("\t");
+            _builder.append("if(");
+            DataType _dataType = f.getDataType();
+            String _lowerCase = ((NamedType) _dataType).getName().toLowerCase();
+            _builder.append(_lowerCase, "\t");
+            _builder.append("id != null){");
+            _builder.newLineIfNotEmpty();
+            _builder.append("\t");
+            _builder.append("\t");
+            DataType _dataType_1 = f.getDataType();
+            String _name_3 = ((NamedType) _dataType_1).getName();
+            _builder.append(_name_3, "\t\t");
+            _builder.append(" new");
+            DataType _dataType_2 = f.getDataType();
+            String _name_4 = ((NamedType) _dataType_2).getName();
+            _builder.append(_name_4, "\t\t");
+            _builder.append(" = this.");
+            DataType _dataType_3 = f.getDataType();
+            String _lowerCase_1 = ((NamedType) _dataType_3).getName().toLowerCase();
+            _builder.append(_lowerCase_1, "\t\t");
+            _builder.append("Service.findById(");
+            DataType _dataType_4 = f.getDataType();
+            String _lowerCase_2 = ((NamedType) _dataType_4).getName().toLowerCase();
+            _builder.append(_lowerCase_2, "\t\t");
+            _builder.append("id);");
+            _builder.newLineIfNotEmpty();
+            _builder.append("\t");
+            _builder.append("\t");
+            _builder.append("new");
+            DataType _dataType_5 = f.getDataType();
+            String _name_5 = ((NamedType) _dataType_5).getName();
+            _builder.append(_name_5, "\t\t");
+            _builder.append(".add");
+            String _name_6 = e.getName();
+            _builder.append(_name_6, "\t\t");
+            _builder.append("(p);");
+            _builder.newLineIfNotEmpty();
+            _builder.append("\t");
+            _builder.append("}");
+            _builder.newLine();
+            {
+              Entity _baseEntity = e.getBaseEntity();
+              boolean _tripleNotEquals = (_baseEntity != null);
+              if (_tripleNotEquals) {
+                _builder.append("\t");
+                _builder.append("p.set");
+                String _name_7 = e.getBaseEntity().getName();
+                _builder.append(_name_7, "\t");
+                _builder.append("(authorname);");
+                _builder.newLineIfNotEmpty();
+              }
+            }
+            _builder.append("\t");
+            _builder.append("return ");
+            String _firstLower = StringExtensions.toFirstLower(e.getName());
+            _builder.append(_firstLower, "\t");
+            _builder.append("Service.new");
+            String _name_8 = e.getName();
+            _builder.append(_name_8, "\t");
+            _builder.append("(p);");
+            _builder.newLineIfNotEmpty();
+            _builder.append("}");
+            _builder.newLine();
+            _builder.append("\t");
+            _builder.newLine();
+          }
+        }
+      }
+    }
+    return _builder;
+  }
+  
+  public CharSequence notArray(final Entity e) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("public ");
+    String _name = e.getName();
+    _builder.append(_name);
+    _builder.append(" new");
+    String _name_1 = e.getName();
+    _builder.append(_name_1);
+    _builder.append("(");
+    String _name_2 = e.getName();
+    _builder.append(_name_2);
+    _builder.append(" h){");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    _builder.append("return ");
+    String _lowerCase = e.getName().toLowerCase();
+    _builder.append(_lowerCase, "\t");
+    _builder.append("Service.new");
+    String _name_3 = e.getName();
+    _builder.append(_name_3, "\t");
+    _builder.append("(h);");
+    _builder.newLineIfNotEmpty();
+    _builder.append("}\t");
     _builder.newLine();
     _builder.newLine();
     return _builder;

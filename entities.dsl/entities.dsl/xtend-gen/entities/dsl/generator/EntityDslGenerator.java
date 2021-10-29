@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import entities.entityModel.Entities;
 import entities.entityModel.Entity;
 import entities.generator.EntityGenerator;
+import java.util.ArrayList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -18,6 +19,8 @@ import org.eclipse.xtext.generator.IGeneratorContext;
  */
 @SuppressWarnings("all")
 public class EntityDslGenerator extends AbstractGenerator {
+  private ArrayList<Entity> entities = new ArrayList<Entity>();
+  
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
     boolean _and = false;
@@ -59,8 +62,10 @@ public class EntityDslGenerator extends AbstractGenerator {
           fsa.generateFile(servicePath, entGen.compileService(e));
           fsa.generateFile(controllerPath, entGen.compileController(e));
           fsa.generateFile(repositoryPath, entGen.compileRepository(e));
+          this.entities.add(e);
         }
       }
+      fsa.generateFile("JSFData.java", entGen.compileFrontend(this.entities));
     }
   }
 }

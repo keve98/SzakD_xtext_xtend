@@ -8,6 +8,7 @@ import entities.entityModel.NamedType
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import javax.inject.Inject
 import entities.entityModel.NamedElement
+import java.util.ArrayList
 
 class EntityGenerator {
 	@Inject extension IQualifiedNameProvider
@@ -194,4 +195,192 @@ class EntityGenerator {
 			
 		'''
 	}
+	
+	def compileFrontend(ArrayList<Entity> e
+	){
+		var isArray = false;
+		'''
+		package com.example.SzakD_Rest.web;
+		
+		
+		import com.example.SzakD_Rest.entities.Blog;
+		import com.example.SzakD_Rest.entities.Comment;
+		import com.example.SzakD_Rest.entities.HasAuthor;
+		import com.example.SzakD_Rest.entities.Post;
+		import com.example.SzakD_Rest.repositories.BlogRepository;
+		import com.example.SzakD_Rest.repositories.CommentRepository;
+		import com.example.SzakD_Rest.repositories.HasAuthorRepository;
+		import com.example.SzakD_Rest.repositories.PostRepository;
+		import com.example.SzakD_Rest.services.BlogService;
+		import com.example.SzakD_Rest.services.CommentService;
+		import com.example.SzakD_Rest.services.HasAuthorService;
+		import com.example.SzakD_Rest.services.PostService;
+		import org.apache.tomcat.JarScanFilter;
+		import org.hibernate.secure.internal.JaccSecurityListener;
+		import org.springframework.beans.factory.annotation.Autowired;
+		import org.springframework.stereotype.Service;
+		
+		import javax.faces.bean.ManagedBean;
+		import javax.faces.bean.SessionScoped;
+		import java.util.List;
+		
+		@Service
+		@ManagedBean(name = "JSFData", eager = true)
+		@SessionScoped
+		public class JSFData {
+			«FOR f : e»
+				private final «f.name.toLowerCase»Repository;
+			«ENDFOR»
+			
+			«FOR f : e»
+				public «f.name»Service «f.name.toFirstLower»;
+			«ENDFOR»
+			
+			«FOR f : e»
+				public «f.name.toFirstUpper» «f.name.toFirstLower» = new «f.name»();
+			«ENDFOR»
+		    
+		    Long blogid;
+		    Long postid;
+		    String authorname;
+		
+		    @Autowired
+		    public JSFData(BlogRepository b, CommentRepository c, HasAuthorRepository h, PostRepository p){
+		        this.blogRepository = b;
+		        this.commentRepository = c;
+		        this.hasAuthorRepository = h;
+		        this.postRepository = p;
+		        «FOR f : e»
+		        this.«f.name.toLowerCase»Service = new «f.name.toFirstUpper»Service(this.«f.name.toLowerCase»Repositroy);
+		        «ENDFOR»
+		    }
+		
+		
+		
+		    //getters, setters
+		    
+		    «FOR f: e»
+		    	public «f.name.toFirstUpper» get«f.name.toFirstUpper»(){
+		    		return «f.name.toFirstLower»;
+		    	}
+		    	
+		    «ENDFOR»
+		    
+		    «FOR f : e»
+		    	public void set«f.name.toFirstUpper»(«f.name» «f.name.toFirstLower»){
+		    		this.«f.name.toFirstLower» = «f.name.toFirstLower»;
+		    	}
+		    	
+		    «ENDFOR»
+		    
+		
+		    public Long getBlogid() {
+		        return blogid;
+		    }
+		
+		    public void setBlogid(Long blogid) {
+		        this.blogid = blogid;
+		    }
+		
+		    public Long getPostid() {
+		        return postid;
+		    }
+		
+		    public void setPostid(Long postid) {
+		        this.postid = postid;
+		    }
+		
+		    public String getAuthorname() {
+		        return authorname;
+		    }
+		
+		    public void setAuthorname(String authorname) {
+		        this.authorname = authorname;
+		    }
+		    
+		
+		    //edits
+		    
+		    «FOR f : e»
+		    	public String set«f.name»ToEdit(Long id){
+		    		this.«f.name.toFirstLower» = this.«f.name.toFirstLower»Service.findById(id);
+		    		return "edit«f.name».xhtml";
+		    	}
+		    	
+		    «ENDFOR»
+		    
+		    
+		
+		    //add new
+		    
+		    «FOR ent : e»
+		    	«FOR f : ent.fields»
+		    		«IF f.array»
+		    			«{isArray = true; ""}»
+			    	«ENDIF»
+		    	«ENDFOR»
+		    	«IF isArray»
+		    		«ent.hasArray»
+		    	«ELSE»
+		    		«ent.notArray»
+		    	«ENDIF»
+		    	«{isArray = false; ""}»
+		    «ENDFOR»
+		
+		    //updates
+		    
+		    «FOR f : e»
+		    	public «f.name» update«f.name»(«f.name» e, Long id){
+		    		return «f.name.toFirstLower»Service.update«f.name»(e, id);
+		    	}
+		    	
+		    «ENDFOR»
+		
+		
+		
+		    //deletes
+		    
+		    «FOR f : e»
+		    	public void delete«f.name»(Long id){
+		    		return «f.name.toFirstLower»Service.delete«f.name»(id);
+		    	}
+		    	
+		    «ENDFOR»
+		}
+		
+		
+		'''
+	}
+	
+	
+	def hasArray(Entity e){
+		'''
+		public «e.name» new«e.name»(«e.name» p){
+			«FOR f : e.fields»
+				«IF f.array»
+					if(«(f.dataType as NamedType).name.toLowerCase»id != null){
+						«(f.dataType as NamedType).name» new«(f.dataType as NamedType).name» = this.«(f.dataType as NamedType).name.toLowerCase»Service.findById(«(f.dataType as NamedType).name.toLowerCase»id);
+						new«(f.dataType as NamedType).name».add«e.name»(p);
+					}
+					«IF e.baseEntity !== null»
+					p.set«e.baseEntity.name»(authorname);
+					«ENDIF»
+					return «e.name.toFirstLower»Service.new«e.name»(p);
+}
+	
+				«ENDIF»
+			«ENDFOR»
+		'''
+	}
+	
+	def notArray(Entity e){
+		
+		'''
+		public «e.name» new«e.name»(«e.name» h){
+			return «e.name.toLowerCase»Service.new«e.name»(h);
+		}	
+		
+		'''
+	}
+	
 }

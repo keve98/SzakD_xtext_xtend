@@ -6,6 +6,8 @@ import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import entities.generator.EntityGenerator
 import entities.entityModel.Entity
+import java.util.List
+import java.util.ArrayList
 
 /**
 * Generates code from your model files on save.
@@ -16,12 +18,17 @@ import entities.entityModel.Entity
 
 
 class EntityDslGenerator extends AbstractGenerator {
- override void doGenerate(Resource resource, IFileSystemAccess2 fsa,
+	
+  ArrayList<entities.entityModel.Entity> entities = new ArrayList<entities.entityModel.Entity>();
+  
+  override void doGenerate(Resource resource, IFileSystemAccess2 fsa,
 IGeneratorContext context) {
  if (resource?.contents.size != 0 &&
  resource?.contents?.get(0) instanceof Entities) {
  val model = resource.contents.get(0) as Entities
  val entGen = new EntityGenerator()
+ 
+
  
  for(Entity e : model.declarations.filter(Entity)){
  	val path = e.name.toString() + ".java"
@@ -33,7 +40,10 @@ IGeneratorContext context) {
  	fsa.generateFile(controllerPath, entGen.compileController(e))
  	fsa.generateFile(repositoryPath, entGen.compileRepository(e))
  	
+ 	entities.add(e);
  }
+ 
+ fsa.generateFile("JSFData.java", entGen.compileFrontend(entities));
  
  }
  }
