@@ -60,13 +60,13 @@ public class EntityDslGenerator extends AbstractGenerator {
           final String repositoryPath = (_string_3 + "Repository.java");
           String _string_4 = e.getName().toString();
           String _plus = ("list" + _string_4);
-          final String listEntityPath = (_plus + ".html");
+          final String listEntityPath = (_plus + ".xhtml");
           String _string_5 = e.getName().toString();
           String _plus_1 = ("new" + _string_5);
-          final String newEntityPath = (_plus_1 + ".html");
+          final String newEntityPath = (_plus_1 + ".xhtml");
           String _string_6 = e.getName().toString();
           String _plus_2 = ("edit" + _string_6);
-          final String editEntityPath = (_plus_2 + ".html");
+          final String editEntityPath = (_plus_2 + ".xhtml");
           fsa.generateFile(path, entGen.compileEntity(e));
           fsa.generateFile(servicePath, entGen.compileService(e));
           fsa.generateFile(controllerPath, entGen.compileController(e));
