@@ -35,10 +35,17 @@ IGeneratorContext context) {
  	val controllerPath = e.name.toString() + "Controller.java"
  	val servicePath = e.name.toString() + "Service.java"
  	val repositoryPath = e.name.toString() + "Repository.java"
+ 	val listEntityPath = "list" + e.name.toString() + ".html";
+ 	val newEntityPath = "new" + e.name.toString() + ".html";
+ 	val editEntityPath = "edit" + e.name.toString() + ".html";
  	fsa.generateFile(path, entGen.compileEntity(e))
  	fsa.generateFile(servicePath, entGen.compileService(e))
  	fsa.generateFile(controllerPath, entGen.compileController(e))
  	fsa.generateFile(repositoryPath, entGen.compileRepository(e))
+ 	fsa.generateFile(listEntityPath, entGen.listEntityFrontend(e));
+ 	fsa.generateFile(newEntityPath, entGen.newEntityFrontend(e));
+ 	fsa.generateFile(editEntityPath, entGen.editEntityFrontend(e));
+ 	
  	
  	entities.add(e);
  }

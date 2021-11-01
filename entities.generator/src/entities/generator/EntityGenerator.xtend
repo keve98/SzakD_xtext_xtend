@@ -367,7 +367,7 @@ class EntityGenerator {
 					«ENDIF»
 					return «e.name.toFirstLower»Service.new«e.name»(p);
 }
-	
+
 				«ENDIF»
 			«ENDFOR»
 		'''
@@ -380,6 +380,139 @@ class EntityGenerator {
 			return «e.name.toLowerCase»Service.new«e.name»(h);
 		}	
 		
+		'''
+	}
+	
+	
+	def listEntityFrontend(Entity e){
+		'''
+		<!DOCTYPE html>
+		<html xmlns="http://www.w3.org/1999/xhtml"
+		      xmlns:h="http://xmlns.jcp.org/jsf/html"
+		      xmlns:ui="http://java.sun.com/jsf/facelets"
+		      xmlns:f="http://java.sun.com/jsf/core"
+		      xmlns:p="http://www.w3.org/2001/XMLSchema-instance"
+		      p:schemaLocation="http://primefaces.org/ui">
+		
+		<h:body>
+		    <p>«e.name»: </p>
+		    <h:form id="form">
+		        <h:button value="New" id="new" outcome="new«e.name».xhtml"></h:button>
+		        <h:dataTable id="table" var="«e.name.toFirstLower»" value="#{«e.name.toFirstLower»Service.all«e.name»s}">
+		            
+		            «FOR f : e.fields»
+		            	«IF f.array»
+		            	<h:column>
+		            		<p:columns value="#{«e.name.toFirstLower».«f.name.toLowerCase»}" var="«f.name.toLowerCase»">
+		            			<f:facet name="header">«f.name»</f:facet>
+		            	    	<p:column value="#{«f.name.toLowerCase».title}"></p:column>
+		            		</p:columns>
+		            	</h:column>
+		            	«ELSE»
+		            	<h:column>
+		            		<f:facet name="header">«f.name»</f:facet>
+		            		<h:outputText value="#{«e.name.toFirstLower».«f.name.toLowerCase»}"/>
+			</h:column>
+		            «ENDIF»
+		            «ENDFOR»
+		            «IF e.baseEntity !== null»
+		            	<h:column>
+		                	<f:facet name="header">«e.baseEntity.name»</f:facet>
+		                	<h:outputText value="#{«e.name».«e.baseEntity.name.toLowerCase»}" />
+		            	</h:column>
+		            «ENDIF»
+		            <h:column>
+		                <h:commandButton value="Edit" id="edit" action="#{JSFData.set«e.name»ToEdit(«e.name.toFirstLower».id)}" label="Edit"/>
+		            </h:column>
+		            <h:column>
+		                <h:commandButton value="Delete" id="delete" action="#{JSFData.delete«e.name»(«e.name.toFirstLower».id)}" label="Delete"/>
+		            </h:column>
+		        </h:dataTable>
+		    </h:form>
+		    <h:button value="Back" outcome="#{request.contextPath}/index.xhtml"/>
+		
+		</h:body>
+		</html>
+		'''
+	}
+	
+	def editEntityFrontend(Entity e){
+		'''
+		<!DOCTYPE html>
+		
+		<html xmlns:h="http://java.sun.com/jsf/html"
+		      xmlns:f="http://java.sun.com/jsf/core">
+		
+		<h:head>
+		    <title>Edit «e.name.toFirstLower»</title>
+		</h:head>
+		
+		<h:body>
+		    <p>Edit «e.name.toFirstLower»</p>
+		    <h:form>
+		        <h:dataTable var="«e.name.toFirstLower»" value="#{JSFData.«e.name.toFirstLower»}">
+		         «FOR f : e.fields»
+		         «IF !f.array»
+		         <h:column>
+		              <f:facet name="header">«f.name»</f:facet>
+		              <h:inputText name="name" value="#{«e.name.toFirstLower».«f.name.toFirstLower»}" />
+		         </h:column>
+		         «ENDIF»
+		         «ENDFOR»
+		         <h:column>
+		             <h:commandButton value="Save" id="save" action="#{JSFData.update«e.name»(«e.name.toFirstLower», «e.name.toFirstLower».id)}"></h:commandButton>
+		         </h:column>
+		        </h:dataTable>
+		        <h:button value="Back" outcome="list«e.name».xhtml"/>
+		    </h:form>
+		</h:body>
+		</html>
+		'''
+	}
+	
+	def newEntityFrontend(Entity e){
+		'''
+		<html xmlns:h="http://java.sun.com/jsf/html"
+		      xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets">
+		
+		<h:head>
+		    <title>New «e.name.toFirstLower»</title>
+		</h:head>
+		
+		
+		<h:body>
+		    <p>Add new «e.name.toFirstLower»</p>
+		    <h:form>
+		        <h:dataTable id="table" var="«e.name.toFirstLower»" value="#{JSFData.«e.name.toFirstLower»}">
+		            «FOR f: e.fields»
+		            «IF f.array»
+		            <h:column>
+		                <f:facet name="header">«f.name»</f:facet>
+		                <h:selectOneListbox id="list«f.name.toFirstLower»" size="3" value="#{JSFData.«f.name.toFirstLower»id}">
+		                    <f:selectItems value="#{«f.name.toFirstLower»Service.all«f.name»}" var="«f.name.toFirstLower»" itemValue="#{«f.name.toFirstLower».id}" itemLabel="#{«f.name.toFirstLower».title}"/>
+		                </h:selectOneListbox>
+		             </h:column>
+		            «ELSE»
+		             <h:column>
+		                <f:facet name="header">«f.name»</f:facet>
+		                <h:inputText value="#{«e.name».«f.name.toFirstLower»}" />
+		             </h:column>
+		            «ENDIF»
+		            «ENDFOR»
+		            «IF e.baseEntity !== null»
+		            <h:column>
+		            	<f:facet name="header">Author</f:facet>
+		            	<h:inputText name="name" value="#{JSFData.authorname}" />
+		            </h:column>
+		            «ENDIF»
+		            <h:column>
+		                <h:commandButton value="Save" id="save" action="#{JSFData.new«e.name»(«e.name.toFirstLower»)}"/>
+		            </h:column>
+		        </h:dataTable>
+		    </h:form>
+		    <h:button value="Back" outcome="list«e.name».xhtml"/>
+		</h:body>
+		</html>
 		'''
 	}
 	
