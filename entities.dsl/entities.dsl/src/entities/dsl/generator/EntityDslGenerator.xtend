@@ -46,7 +46,6 @@ IGeneratorContext context) {
  	fsa.generateFile(newEntityPath, entGen.newEntityFrontend(e));
  	fsa.generateFile(editEntityPath, entGen.editEntityFrontend(e));
  	
- 	
  	entities.add(e);
  }
  

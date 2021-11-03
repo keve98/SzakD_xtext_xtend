@@ -196,9 +196,10 @@ class EntityGenerator {
 		'''
 	}
 	
-	def compileFrontend(ArrayList<Entity> e
-	){
+	def compileFrontend(ArrayList<Entity> e){
 		var isArray = false;
+		var hasExtends = false;
+		var extendName = "";
 		'''
 		package com.example.SzakD_Rest.web;
 		
@@ -229,27 +230,41 @@ class EntityGenerator {
 		@SessionScoped
 		public class JSFData {
 			«FOR f : e»
-				private final «f.name.toLowerCase»Repository;
-			«ENDFOR»
-			
-			«FOR f : e»
-				public «f.name»Service «f.name.toFirstLower»;
-			«ENDFOR»
-			
-			«FOR f : e»
-				public «f.name.toFirstUpper» «f.name.toFirstLower» = new «f.name»();
+			private final «f.name.toFirstLower»Repository;
+	public «f.name»Service «f.name.toFirstLower»;
+	public «f.name.toFirstUpper» «f.name.toFirstLower» = new «f.name»();
+				
 			«ENDFOR»
 		    
-		    Long blogid;
-		    Long postid;
-		    String authorname;
+		    
+		    «FOR ent : e»
+		    	«FOR f : ent.fields»
+		    		«IF f.array»
+						«{isArray = true; ""}»
+		    		«ENDIF»
+		    	«ENDFOR»
+				«IF isArray»
+					«"    "»Long «ent.name.toFirstLower»id;
+					«{isArray = false; ""}»
+				«ENDIF»
+		    «ENDFOR»
+		    
+		    «FOR ent : e»
+		    «IF ent.baseEntity!==null»
+		    	«IF {extendName !== ent.baseEntity.name}»
+		    		String «ent.baseEntity.name.toLowerCase»name;
+		    		«{extendName = ent.baseEntity.name; ""}»
+		    	«ENDIF»
+		    «ENDIF»
+		    «ENDFOR»
+		    
+		
 		
 		    @Autowired
-		    public JSFData(BlogRepository b, CommentRepository c, HasAuthorRepository h, PostRepository p){
-		        this.blogRepository = b;
-		        this.commentRepository = c;
-		        this.hasAuthorRepository = h;
-		        this.postRepository = p;
+		    public JSFData(«FOR ent : e»«ent.name»Repository «ent.name.toFirstLower», «ENDFOR»){
+		    	«FOR ent : e»
+		    	this.«ent.name.toFirstLower»Repository = «ent.name.toFirstLower»
+		    	«ENDFOR»
 		        «FOR f : e»
 		        this.«f.name.toLowerCase»Service = new «f.name.toFirstUpper»Service(this.«f.name.toLowerCase»Repositroy);
 		        «ENDFOR»
@@ -263,7 +278,6 @@ class EntityGenerator {
 		    	public «f.name.toFirstUpper» get«f.name.toFirstUpper»(){
 		    		return «f.name.toFirstLower»;
 		    	}
-		    	
 		    «ENDFOR»
 		    
 		    «FOR f : e»
@@ -273,32 +287,43 @@ class EntityGenerator {
 		    	
 		    «ENDFOR»
 		    
-		
-		    public Long getBlogid() {
-		        return blogid;
-		    }
-		
-		    public void setBlogid(Long blogid) {
-		        this.blogid = blogid;
-		    }
-		
-		    public Long getPostid() {
-		        return postid;
-		    }
-		
-		    public void setPostid(Long postid) {
-		        this.postid = postid;
-		    }
-		
-		    public String getAuthorname() {
-		        return authorname;
-		    }
-		
-		    public void setAuthorname(String authorname) {
-		        this.authorname = authorname;
-		    }
 		    
+		    «FOR ent : e»
+		       	«FOR f : ent.fields»
+		       		«IF f.array»
+		    		«{isArray = true; ""}»
+		       		«ENDIF»
+		       	«ENDFOR»
+		    	«IF isArray»
+		    		public Long get«ent.name»id() {
+		    			return «ent.name.toFirstLower»id;
+		    		}
+		    				
+		    		public void set«ent.name»id(Long id) {
+		    		     this.«ent.name.toFirstLower»id = «ent.name.toFirstLower»id;
+		    		}
+		    	«ENDIF»
+		    	«{isArray = false; ""}»
+		    «ENDFOR»
 		
+		
+		«{extendName=""; ""}»
+		«FOR ent : e»
+		    «IF ent.baseEntity!==null»
+		    	«IF {extendName !== ent.baseEntity.name}»
+				    		«"    "»public String get«ent.baseEntity.name»name() {
+				    			«"    "»return «ent.baseEntity.name.toLowerCase»name;
+				    		«"    "»}
+				    				
+				    		«"    "»public void set«ent.baseEntity.name»name(String authorname) {
+				    		    «"    "»this.«ent.baseEntity.name.toLowerCase»name = «ent.baseEntity.name.toLowerCase»name;
+				    		«"    "»}
+				    		«{extendName = ent.baseEntity.name; ""}»
+		    	«ENDIF»
+		    «ENDIF»
+		«ENDFOR»
+		
+			
 		    //edits
 		    
 		    «FOR f : e»
